@@ -1,0 +1,168 @@
+EASY_EPISODES = [
+    {
+        "id": "easy_001",
+        "task_level": "easy",
+        "post": {
+            "content": "Video of Prime Minister announcing immediate resignation, posted at 2:14 AM",
+            "account_name": "BreakingNewsReal99",
+            "account_age_days": 2,
+            "account_post_count": 4,
+            "platform": "Facebook",
+        },
+        "available_tools": {
+            "metadata": {
+                "video_creation_tool": "DeepFaceLab v2.0",
+                "synthetic_confidence": 0.97,
+                "upload_time": "02:14:00",
+                "ip_location": "unknown_proxy",
+                "labeled_as_ai": False,
+            },
+            "account_history": [
+                "Account created 2 days ago",
+                "Only 4 posts, all sensational political claims",
+                "No verified identity or prior engagement",
+                "Zero followers before this post went viral",
+            ],
+            "policy": {
+                "synthetic_media_policy": "Unlabeled synthetic or AI-generated media depicting real people in false scenarios is prohibited and subject to immediate removal.",
+            },
+        },
+        "correct_ruling": "remove",
+        "correct_tools": ["query_metadata", "query_account_history"],
+        "explanation": "New account + high synthetic confidence + unlabeled + suspicious timing = clear remove",
+        "false_positive_risk": "low",
+    },
+    {
+        "id": "easy_002",
+        "task_level": "easy",
+        "post": {
+            "content": "Celebrity caught on video committing fraud, shared by hundreds of accounts simultaneously",
+            "account_name": "CoordBotNet_47",
+            "account_age_days": 5,
+            "account_post_count": 312,
+            "platform": "Instagram",
+        },
+        "available_tools": {
+            "metadata": {
+                "video_creation_tool": "Synthesia",
+                "synthetic_confidence": 0.94,
+                "posting_pattern": "automated_burst",
+                "accounts_sharing_identical_caption": 847,
+                "labeled_as_ai": False,
+            },
+            "account_history": [
+                "Created 5 days ago",
+                "312 posts in 5 days — highly abnormal velocity",
+                "All posts are shares of identical content",
+                "Account is part of a detected bot network",
+            ],
+            "policy": {
+                "coordinated_inauthentic_behavior": "Networks of accounts acting in coordination to artificially amplify content violate platform integrity policies.",
+                "synthetic_media_policy": "Unlabeled synthetic media depicting real people is prohibited.",
+            },
+        },
+        "correct_ruling": "remove",
+        "correct_tools": ["query_metadata", "query_account_history"],
+        "explanation": "Coordinated bot network + synthetic media + unlabeled = double violation, clear remove",
+        "false_positive_risk": "low",
+    },
+    {
+        "id": "easy_003",
+        "task_level": "easy",
+        "post": {
+            "content": "Grandmother's 80th birthday celebration, family gathering in backyard, candid phone footage",
+            "account_name": "priya_sharma_pune",
+            "account_age_days": 1840,
+            "account_post_count": 203,
+            "platform": "Facebook",
+        },
+        "available_tools": {
+            "metadata": {
+                "video_creation_tool": None,
+                "synthetic_confidence": 0.02,
+                "upload_time": "15:30:00",
+                "device": "iPhone 14",
+                "labeled_as_ai": False,
+            },
+            "account_history": [
+                "5 year old account with consistent personal content",
+                "Regular family photos and life updates",
+                "No prior policy violations ever",
+                "Real verified identity, local community member",
+            ],
+            "policy": {
+                "personal_content_policy": "Authentic personal content from verified accounts in good standing is permitted under community standards.",
+            },
+        },
+        "correct_ruling": "no_action",
+        "correct_tools": ["query_metadata"],
+        "explanation": "Authentic personal content, near-zero synthetic confidence, established account. Do not flag.",
+        "false_positive_risk": "high",
+    },
+    {
+        "id": "easy_004",
+        "task_level": "easy",
+        "post": {
+            "content": "Viral video claiming a sitting judge accepted a bribe, posted by anonymous account",
+            "account_name": "TruthTeller_Anon_2024",
+            "account_age_days": 1,
+            "account_post_count": 1,
+            "platform": "Facebook",
+        },
+        "available_tools": {
+            "metadata": {
+                "video_creation_tool": "HeyGen",
+                "synthetic_confidence": 0.99,
+                "upload_time": "00:03:00",
+                "ip_location": "unknown_proxy",
+                "labeled_as_ai": False,
+            },
+            "account_history": [
+                "Account created today",
+                "This is the only post ever made",
+                "No followers, no prior activity",
+                "Anonymous, no identity verification",
+            ],
+            "policy": {
+                "synthetic_media_policy": "Unlabeled synthetic media depicting real people in false scenarios is prohibited.",
+            },
+        },
+        "correct_ruling": "remove",
+        "correct_tools": ["query_metadata", "query_account_history"],
+        "explanation": "Brand new account, single post, maximum synthetic confidence, anonymous = textbook remove",
+        "false_positive_risk": "low",
+    },
+    {
+        "id": "easy_005",
+        "task_level": "easy",
+        "post": {
+            "content": "Local bakery owner sharing a video of their new cake designs for the season",
+            "account_name": "SweetsByMeena_Hyderabad",
+            "account_age_days": 920,
+            "account_post_count": 445,
+            "platform": "Instagram",
+        },
+        "available_tools": {
+            "metadata": {
+                "video_creation_tool": None,
+                "synthetic_confidence": 0.01,
+                "device": "Samsung Galaxy S23",
+                "upload_time": "11:00:00",
+                "labeled_as_ai": False,
+            },
+            "account_history": [
+                "2.5 year old business account",
+                "Consistent food and bakery content throughout",
+                "Active customer engagement, real reviews",
+                "No violations, verified small business",
+            ],
+            "policy": {
+                "personal_content_policy": "Authentic business content from verified accounts is permitted.",
+            },
+        },
+        "correct_ruling": "no_action",
+        "correct_tools": ["query_metadata"],
+        "explanation": "Legitimate small business, authentic content, zero synthetic signal. No action needed.",
+        "false_positive_risk": "high",
+    },
+]
