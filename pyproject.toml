@@ -16,6 +16,9 @@ dependencies = [
     "huggingface-hub>=0.20.0",
 ]
 
+[project.scripts]
+server = "server.app:main"
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["content_integrity_env*"]

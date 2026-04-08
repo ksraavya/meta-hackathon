@@ -121,6 +121,10 @@ class ContentIntegrityEnvironment:
     # ── Tool Handlers ─────────────────────────────────────
 
     def _handle_metadata(self):
+        # 1. Safety check: If reset wasn't called or episode is lost
+        if ContentIntegrityEnvironment._episode is None:
+            self.reset("easy") # Auto-initialize to prevent crash
+            
         if "query_metadata" in self._tools_used:
             return PENALTY_DUPLICATE_TOOL, None, "Metadata already queried."
 
@@ -316,6 +320,14 @@ class ContentIntegrityEnvironment:
             episode_id=self._episode_id or "not_started",
             step_count=self._step_count,
         )
+    
+    def get_metadata(self):
+        """Required by the OpenEnv server for the /metadata endpoint."""
+        return {
+            "name": "content-integrity-investigator",
+            "description": "Environment for investigating content integrity.",
+            "version": "1.0.0"
+        }
     
     def close(self):
         """Cleanup environment (required by OpenEnv)."""
