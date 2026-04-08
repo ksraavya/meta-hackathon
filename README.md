@@ -1,6 +1,6 @@
 ---
 title: Content Integrity Investigator
-emoji: shield
+emoji: 🛡️
 colorFrom: blue
 colorTo: indigo
 sdk: docker
