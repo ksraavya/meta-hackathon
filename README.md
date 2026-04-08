@@ -66,3 +66,19 @@ docker run -p 8000:8000 content-integrity-env
 
 # 3. Run the inference evaluation
 python inference.py
+```
+## Note on Ground Truth
+
+Episodes use a synthetic policy database modeled on publicly 
+documented Meta content policies. All ground truth labels are 
+hand-crafted with known correct answers. In production, this 
+environment would connect to Meta's actual policy API and use 
+historical human reviewer decisions as ground truth.
+
+---
+
+## 🛡️ Final Note: The Integrity Mission
+This environment was designed to move beyond simple "pass/fail" moderation. By implementing weighted rewards for evidence-gathering and penalties for overconfidence, the **Content Integrity Investigator** ensures that AI agents act as responsible stewards of online discourse—prioritizing accuracy and policy adherence over speed.
+
+**Developed by Sraavya Kochhar** 
+*Meta OpenEnv Hackathon 2026*
