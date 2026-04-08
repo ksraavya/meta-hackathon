@@ -54,9 +54,10 @@ FP_PENALTY = {
 
 class ContentIntegrityEnvironment:
 
+    _episode = None
+
     def __init__(self):
         super().__init__()
-        self._episode = None
         self._episode_id = None
         self._tools_used = []
         self._policies_queried = []
@@ -81,7 +82,7 @@ class ContentIntegrityEnvironment:
         else:
             pool = ALL_EPISODES
 
-        self._episode = random.choice(pool)
+        ContentIntegrityEnvironment._episode = random.choice(pool)
 
         return self._build_observation(None, 0.0, "New case assigned.")
 
@@ -123,7 +124,7 @@ class ContentIntegrityEnvironment:
         if "query_metadata" in self._tools_used:
             return PENALTY_DUPLICATE_TOOL, None, "Metadata already queried."
 
-        result = self._episode["available_tools"]["metadata"]
+        result = ContentIntegrityEnvironment._episode["available_tools"]["metadata"]
         self._tools_used.append("query_metadata")
         self._accumulated_evidence["metadata"] = result
 
@@ -133,7 +134,7 @@ class ContentIntegrityEnvironment:
         if "query_account_history" in self._tools_used:
             return PENALTY_DUPLICATE_TOOL, None, "Account already queried."
 
-        result = self._episode["available_tools"]["account_history"]
+        result = ContentIntegrityEnvironment._episode["available_tools"]["account_history"]
         self._tools_used.append("query_account_history")
         self._accumulated_evidence["account"] = result
 
@@ -171,13 +172,13 @@ class ContentIntegrityEnvironment:
     # ── Tool Reward ───────────────────────────────────────
 
     def _tool_reward(self, tool):
-        correct = set(self._episode.get("correct_tools", []))
+        correct = set(ContentIntegrityEnvironment._episode.get("correct_tools", []))
         return REWARD_RELEVANT_TOOL if tool in correct else REWARD_IRRELEVANT_TOOL
 
     # ── Evidence Quality ──────────────────────────────────
 
     def _evidence_score(self):
-        correct = set(self._episode.get("correct_tools", []))
+        correct = set(ContentIntegrityEnvironment._episode.get("correct_tools", []))
         used = set(self._tools_used)
 
         if not used:
@@ -201,12 +202,12 @@ class ContentIntegrityEnvironment:
 
     def _handle_ruling(self, ruling):
         reward = self._calculate_reward(ruling)
-        correct = self._episode["correct_ruling"]
+        correct = ContentIntegrityEnvironment._episode["correct_ruling"]
         return reward, f"Ruling={ruling}, Correct={correct}, Reward={reward}"
 
     def _calculate_reward(self, ruling):
 
-        ep = self._episode
+        ep = ContentIntegrityEnvironment._episode
         correct = ep["correct_ruling"]
         correct_tools = set(ep.get("correct_tools", []))
         tools_used = set(self._tools_used)
@@ -290,7 +291,7 @@ class ContentIntegrityEnvironment:
     # ── Observation ───────────────────────────
 
     def _build_observation(self, result, reward, message):
-        post = self._episode["post"]
+        post = ContentIntegrityEnvironment._episode["post"]
 
         return InvestigatorObservation(
             post_content=post["content"],
@@ -299,7 +300,7 @@ class ContentIntegrityEnvironment:
             platform=post.get("platform", "Facebook"),
             step_number=self._step_count,
             max_steps=MAX_STEPS,
-            task_level=self._episode.get("task_level"),
+            task_level=ContentIntegrityEnvironment._episode.get("task_level"),
             tools_used=self._tools_used.copy(),
             tools_available=[t for t in ALL_TOOLS if t not in self._tools_used],
             latest_tool_result=result,
@@ -315,3 +316,15 @@ class ContentIntegrityEnvironment:
             episode_id=self._episode_id or "not_started",
             step_count=self._step_count,
         )
+    
+    def close(self):
+        """Cleanup environment (required by OpenEnv)."""
+        pass
+
+    async def reset_async(self, task_level: str = None):
+        """Async wrapper for reset (required by OpenEnv)."""
+        return self.reset(task_level)
+    
+    async def step_async(self, action):
+        obs, reward, done, info = self.step(action)
+        return obs

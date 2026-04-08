@@ -1,0 +1,21 @@
+spec_version: 1
+name: content-integrity-investigator
+type: environment
+runtime: docker
+app: server.app:app
+port: 8000
+description: >
+  Multi-step RL environment for training AI agents to investigate
+  social media content integrity cases. Agents gather evidence across
+  three investigation tools before making a ruling: remove, no_action,
+  or escalate. Reward function penalizes false positives asymmetrically,
+  reflecting the real cost of wrongful content removal. Three task
+  levels (easy/medium/hard) with adversarial episodes mixed in to
+  prevent degenerate agent strategies.
+tags:
+  - content-moderation
+  - multi-step
+  - tool-use
+  - meta-relevant
+  - false-positive-aware
+author: Sraavya 
