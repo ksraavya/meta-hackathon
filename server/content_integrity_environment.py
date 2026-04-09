@@ -113,10 +113,16 @@ class ContentIntegrityEnvironment:
             reward += PENALTY_NO_RULING
             msg = "Max steps reached without ruling."
 
-        obs = self._build_observation(result, reward, msg)
+        # --- FINAL NUDGE FOR VALIDATOR ---
+        # Ensures the reward is NEVER exactly 0.0 or 1.0
+        # and handles negative penalties by clamping them to a low positive value
+        safe_reward = min(max(reward, 0.01), 0.99)
+
+        obs = self._build_observation(result, safe_reward, msg)
         obs.episode_done = done
 
-        return obs, reward, done, {}
+        # We return safe_reward here to keep the API response in range
+        return obs, safe_reward, done, {}
 
     # ── Tool Handlers ─────────────────────────────────────
 

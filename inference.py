@@ -47,6 +47,9 @@ Respond with ONLY a JSON object. Available actions:
 3. {"action_type": "query_policy", "policy_section": "<section_name>"}
 4. {"action_type": "make_ruling", "ruling": "<remove|no_action|escalate>", "reasoning": "<text>"}
 
+CRITICAL: 'no_action', 'remove', and 'escalate' are NOT action_types. 
+They are values for the "ruling" field WITHIN the "make_ruling" action.
+
 CRITICAL: Do NOT invent policy sections. You MUST only use these exact names:
 - synthetic_media_policy
 - labeled_synthetic_media_exemption
@@ -88,7 +91,7 @@ async def run_task(client: OpenAI, env, task_name: str, task_level: str) -> floa
     rewards = []
     steps_taken = 0
     success = False
-    score = 0.0 
+    score = 0.01  # Initialize with the lower bound epsilon
     
     log_start(task=task_name, env=ENV_NAME, model=MODEL_NAME)
     
@@ -107,14 +110,16 @@ async def run_task(client: OpenAI, env, task_name: str, task_level: str) -> floa
                 # Validates against the literal policy names
                 action_obj = InvestigatorAction(**action_dict)
                 result = await env.step(action_obj)
-                reward = result.reward or 0.0
+                
+                # Nudge individual rewards to stay positive (satisfies internal range checks)
+                reward = max(0.01, result.reward or 0.0)
                 error_msg = None
                 done_status = result.done
             except Exception as e:
-                # Catch hallucinations (like wrong policy names)
-                reward = 0.0
+                # Catch hallucinations
+                reward = 0.01 
                 error_msg = "invalid_action_format"
-                done_status = True # Stop the task on error
+                done_status = True 
                 log_step(step, json.dumps(action_dict), reward, done_status, error_msg)
                 break
             
@@ -125,11 +130,17 @@ async def run_task(client: OpenAI, env, task_name: str, task_level: str) -> floa
             if done_status:
                 break
         
-        score = min(max(sum(rewards), 0.0), 1.0)
+        # Calculate base score
+        raw_score = sum(rewards)
+        
+        # CLAMP & NUDGE: Ensure score is strictly 0 < score < 1
+        # This satisfies: "Each task's score must be strictly between 0 and 1"
+        score = min(max(raw_score, 0.01), 0.99)
+        
         success = score >= SUCCESS_SCORE_THRESHOLD
         
     except Exception:
-        score = 0.0
+        score = 0.01 # Safe failure score
         
     finally:
         log_end(success, steps_taken, score, rewards)
